@@ -1,5 +1,7 @@
 from Bio import Entrez, Medline
 
+#De zoekopdracht in pubmed. Er wordt een connectie gemaakt met behulp van Entrez.
+#Er is ingesteld dat alle artikelen vanaf het jaar 2000 worden gezocht. 
 def findArticles(zoekwoord):
     handle = Entrez.esearch(db="pubmed",
                             term=zoekwoord,
@@ -12,6 +14,7 @@ def findArticles(zoekwoord):
 
     return ID
 
+#Met behulp van de efetch functie van Entrez zijn de abstracts, keywords, auteurs, data en titels van elk artikel opgehaald. 
 def getAbstracts(ID):
     dictionary = {}
     dictionary_textmining = {}
@@ -51,6 +54,7 @@ def getAbstracts(ID):
 
     return keys, abstracts, auteur, datum, titel, dictionary, dictionary_textmining
 
+#Generen van de tabel met de ID's, auteurs, keywords, data en titels. 
 def tabel(ID, auteur, keys, datum, titel):
     tablet = """"""
     aantal = 0
