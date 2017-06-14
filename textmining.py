@@ -7,6 +7,8 @@ import re
 import json
 import os
 
+#functie: openen bestand met extra stopwoorden
+#return: lijst met stopwoorden
 def openbestand():
     terrierbestand = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, 'Project_8', 'static', 'stop_terrier.txt'))
     terrier_bestand = open(terrierbestand,"r")
@@ -21,6 +23,10 @@ def openbestand():
     terrier_bestand.close()
     return terrier_stop
 
+#input: dictionary van artikelen met titel, abstact en keywoorden, lijst met extra stopwoorden
+#functie: per artikel worden de titel, abstract en keywoorden gestemd en bekeken of deze niet in de stopwoorden zit,
+#van de 10 meest voorkomende woorden uit de abstract met de titel en keywoorden worden combinaties gemaakt van alle woorden per artikel.
+#return: per artikel/PMID combinaties van termen
 def tokenize(artikels,terrier_stop):
     leestekens = list(string.punctuation)
     extra_woorden = ["cancer","human","amino","aa","enzym","acid","fatti","vitro","rat","level","death","tumor"]
@@ -102,11 +108,14 @@ def tokenize(artikels,terrier_stop):
                     combi_artikel.append((w1,w2))
 
         combos[key] = combi_artikel
-    # print(combos)
     return combos
 
+#input: dictionary van combinaties per artikel/PMID
+#functie: vergelijken van de combinaties tussen de artikelen. 
+#Alleen de combinaties die in 10 of meer artikelen staan worden opgeslagen in een dictionary
+#met als key de combinatie en als values de PMIDs
+#return: dictionary van combinaties met PMIDs
 def overeenkomst(combos):
-    # absoluth_path = os.path.abspath("Project_8/index.py")
     keyList = sorted(combos.keys())
     overeenkomst_dic = {}
     for i in range(len(keyList) - 1):
@@ -138,6 +147,9 @@ def overeenkomst(combos):
 
     return eind_dic
 
+#input: dictionary van combinaties met PMIDs
+#functie: het omzetten van de input naar JSON format, ook wordt een JSON bestand opgeslagen
+#return:2 lijsten met JSON data, nodes en links voor de visualisatie van de graph
 def toJson(dic_overeenkomst):
     project_path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, 'Project_8', 'static'))
     json_bestand = {"nodes": [], "links": []}
