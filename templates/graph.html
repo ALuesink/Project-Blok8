@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="shortcut icon" href="{{ url_for('static',filename='flavicon.png') }}">
+    <meta charset="UTF-8">
+    <title>Graph</title>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='graph.css') }}">
+
+</head>
+<body>
+    <h1>Resultaat textmining</h1>
+    <h3>In de graaf hieronder wordt het resultaat van de textmining weergegeven.<br>
+    De nodes van de graaf zijn termen die voorkomen in de artikelen die gevonden zijn mbv de ingevoerde zoekterm,<br>
+    de links zijn de connecties tussen de termen en op de links wordt weergegeven in hoe veel artikelen beide termen aanwezig zijn.</h3>
+
+    <script type="text/javascript" src="https://cdn.zoomcharts-cloud.com/1/stable/zoomcharts.js"></script>
+    <div id="chartContainer"></div>
+
+    <script type="text/javascript">
+        var nodes = {{ data[0]|tojson }};
+        var links = {{ data[1]|tojson }};
+
+        var chart = new NetChart({
+            container: document.getElementById("chartContainer"),
+            navigation: {
+                focusNodeExpansionRadius: 3,
+                initialNodes: ["lipoxygenas"],
+                mode: "focusnodes"
+            },
+            style: {
+                node: {display: "text"},
+                nodeLabel: {
+                    padding: 4,
+                    backgroundStyle: {
+                        fillColor: '#333'
+                    },
+                    textStyle: {
+                        fillColor: '#f3f3f3'
+                    }
+                },
+                nodeStyleFunction: nodeStyle
+            },
+            area: {height: 600},
+            data: {
+                preloaded: {
+                    nodes: nodes,
+                    links: links
+                }
+            },
+            layout: {nodeSpacing: 30},
+            theme: NetChart.themes.dark
+        });
+        function nodeStyle(node) {
+            node.label = node.data.name;
+            var min = 15;
+            var max = 35;
+            var nodeRadius = Math.floor(Math.random()*(max-min)) + min;
+            node.radius = nodeRadius;
+            if(node.hovered) node.radius = 45;
+        }
+    </script>
+</body>
+</html>
